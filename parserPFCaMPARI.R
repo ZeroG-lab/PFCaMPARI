@@ -1,33 +1,43 @@
 getwd()
 setwd("C:/Users/hamme/OneDrive/Documents/R/PFC")
 
-df_Flight_2 <- read_xlsx("C:/Users/hamme/OneDrive/Documents/University/PhD/PFC April 2021/all flight data/Exported_Data/Flight_2.xlsx")
-df_Flight_3 <- read_xlsx("C:/Users/hamme/OneDrive/Documents/University/PhD/PFC April 2021/all flight data/Exported_Data/Flight_3.xlsx")
+library(readxl)
 
-df_Flight_2 <- df_Flight_2 [-c(1:6),]
-df_Flight_3 <- df_Flight_3 [-c(1:6),]
 
-df <- data.frame()
 
+PFCaMPARI <- data.frame()
+
+for (k in 1:3) {
 for (i in 1:8) {
 
-  df_Flight_1 <- read_xlsx("C:/Users/hamme/OneDrive/Documents/University/PhD/PFC April 2021/all flight data/Exported_Data/Flight_1.xlsx")
+  df_Flight <- read_xlsx(paste0("C:/Users/hamme/OneDrive/Documents/University/PhD/PFC April 2021/all flight data/Exported_Data/Flight_", k, ".xlsx"), sheet = i)
    
-  df_Flight_1 <- df_Flight_1[-c(1:6),]
+  df_Flight <- df_Flight[-c(1:6),]
  
-  metadata <- df_Flight_1[1,1]
+  metadata <- colnames(df_Flight[ ,1])
+  metadata <- unlist(strsplit(metadata, "_"))
   
-  Flight_1 <- df_Flight_1[ , -c(1,2)]
   
-  Flight_1 <- data.frame(t(Flight_1))
   
-  Flight_1$X2 <- as.numeric(Flight_1$X2)
   
-  colnames(Flight_1) <- NULL
-  rownames(Flight_1) <- NULL
-  Flight_1$sheet <- i
+  Flight <- df_Flight[ , -c(1,2)]
   
-  #Alle Informationen als eigene Spalte hinzuf?gen
+  Flight <- data.frame(t(Flight))
   
-  df <- rbind(df,Flight_1)
+  Flight$X2 <- as.numeric(Flight$X2)
+  
+  
+  
+  colnames(Flight) <- NULL
+  rownames(Flight) <- NULL
+  
+  Flight$Flight <- gsub("^.*t", "", metadata[1])
+  Flight$Unit <- gsub("^.*t", "", metadata [2])
+  Flight$Plate <- gsub("^.*e", "", metadata [3])
+  Flight$Treatment <-metadata [4]
+  
+  PFCaMPARI <- rbind(PFCaMPARI,Flight)
 }
+}
+
+colnames(PFCaMPARI)[1:2] <- c("Well", "ConversionRate")
