@@ -42,7 +42,7 @@ for (i in 1:8) {
 }
 
 # added extra columns in the dataframe for 96 well plate row and column
-# to make it comatible with the Bioassays package
+# to make it compatible with the Bioassays package
 
 PFCaMPARI$col <- gsub('^.', '', PFCaMPARI$Well)
 PFCaMPARI$row <- substring(PFCaMPARI$Well,1 ,1)
