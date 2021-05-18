@@ -41,4 +41,10 @@ for (i in 1:8) {
   rm(i,k)
 }
 
+# added extra columns in the dataframe for 96 well plate row and column
+# to make it comatible with the Bioassays package
 
+PFCaMPARI$col <- gsub('^.', '', PFCaMPARI$Well)
+PFCaMPARI$row <- substring(PFCaMPARI$Well,1 ,1)
+col_order <- c("row","col","Well","ConversionRate","Flight","Unit", "Plate", "Treatment")
+PFCaMPARI <- PFCaMPARI[, col_order]
