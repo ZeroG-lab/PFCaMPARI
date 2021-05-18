@@ -1,8 +1,4 @@
-getwd()
-setwd("C:/Users/hamme/OneDrive/Documents/R/PFC")
-
 library(readxl)
-
 
 
 PFCaMPARI <- data.frame()
@@ -10,7 +6,7 @@ PFCaMPARI <- data.frame()
 for (k in 1:3) {
 for (i in 1:8) {
 
-  df_Flight <- read_xlsx(paste0("C:/Users/hamme/OneDrive/Documents/University/PhD/PFC April 2021/all flight data/Exported_Data/Flight_", k, ".xlsx"), sheet = i)
+  df_Flight <- read_xlsx(paste0("./Flight_", k, ".xlsx"), sheet = i)
    
   df_Flight <- df_Flight[-c(1:6),]
  
@@ -36,8 +32,13 @@ for (i in 1:8) {
   Flight$Plate <- gsub("^.*e", "", metadata [3])
   Flight$Treatment <-metadata [4]
   
+  colnames(Flight)[1:2] <- c("Well", "ConversionRate")
+  
   PFCaMPARI <- rbind(PFCaMPARI,Flight)
+  
+  rm(df_Flight, Flight, metadata)
 }
+  rm(i,k)
 }
 
-colnames(PFCaMPARI)[1:2] <- c("Well", "ConversionRate")
+
