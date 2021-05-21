@@ -52,17 +52,33 @@ PFCaMPARI <- PFCaMPARI[, col_order]
 
 # Import Hardware flight data: 50 sets per second,
 # 8 second for every event -> 400 entries per illumination
+#extract from event start LED on + 400 rows (50 Hz -> 8 sec)
 
-# Step One: Delete Entries till the first event
 
-Unit101_Flight1 <- read.csv2("./Unit101_Flight1.csv", header=TRUE)
+Unit101_Flight1 <- read.csv("./Unit101_Flight1.csv", sep=";", header=TRUE)
 
-#extract column information from first trigger to first stop
+Flight<-Unit101_Flight1
 
-event1 <- Unit101_Flight1$event[c(1:200),]
+#for
+Flight_AVG<-data.frame()
+  
+for (i in grep("LED ON",Flight$event)) {
+  
+ colmean<-colMeans(Flight[i:(i+399),-c(1,11,12)])
+ 
+ 
+  
+  Flight_AVG$Board <-gsub(".*Board: *","", Flight$event[i])
+  Flight_AVG$Well <- gsub(".*A*, ","", Flight$event[i])
+ 
+ 
+  Flight_AVG<-rbind(Flight_AVG,colmean) 
+  colnames(Flight_AVG)<-colnames(Flight)[2:10]
+}
 
-event1 <- Unit101_Flight1$event[c(".*LED ON*":".*LEDs off"),]
 
-event1 <- Unit101_Flight1[c("Board: 1 LED ON H9, Board: 1 LED ON H3, Board: 2 LED ON H9, Board: 2 LED ON H3":"LEDs off, Board: 1 LED ON H12, Board: 1 LED ON H6, Board: 2 LED ON H12, Board: 2 LED ON H6
-"),]
+
+
+events <- Unit101_Flight1[which(Unit101_Flight1$event != ""),]
+
 
