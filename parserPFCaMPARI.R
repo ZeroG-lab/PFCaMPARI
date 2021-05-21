@@ -82,3 +82,4 @@ for (i in grep("LED ON",Flight$event)) {
 events <- Unit101_Flight1[which(Unit101_Flight1$event != ""),]
 
 
+a
