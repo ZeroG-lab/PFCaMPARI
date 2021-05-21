@@ -64,16 +64,39 @@ Flight_AVG<-data.frame()
   
 for (i in grep("LED ON",Flight$event)) {
   
- colmean<-colMeans(Flight[i:(i+399),-c(1,11,12)])
+ colmean<-data.frame(t(colMeans(Flight[i:(i+399),-c(1,11,12)])))
  
  
-  
-  Flight_AVG$Board <-gsub(".*Board: *","", Flight$event[i])
-  Flight_AVG$Well <- gsub(".*A*, ","", Flight$event[i])
+ metastring <- unique(gsub("Board: ", "", unlist(strsplit(unlist(strsplit(gsub("LEDs off, ", "", Flight$event[i]), split = ", ")), split = " LED ON "))))
  
+ 
+ colmean$Board <- paste(metastring[1])
+ colmean$Well <- paste(metastring[2])
+ 
+ timestring <- unlist(strsplit(Flight$time[i], split = ":"))
+ 
+ if(nchar(timestring[2]) == 1) {
+   timestring[2] <- paste0(0, timestring[2])
+ }else{}
+ 
+ colmean$Time <-  paste(timestring, collapse = ":")
+ 
+ colmean <- rbind(colmean,colmean[1,])
+ colmean$Board[2] <- paste(metastring[1])
+ colmean$Well[2] <- paste(metastring[3])
+ 
+ colmean <- rbind(colmean,colmean[1,])
+ colmean$Board[3] <- paste(metastring[4])
+ colmean$Well[3] <- paste(metastring[2])
+ 
+ colmean <- rbind(colmean,colmean[1,])
+ colmean$Board[4] <- paste(metastring[4])
+ colmean$Well[4] <- paste(metastring[3])
+ 
+ colnames(colmean)[1:9] <- c("Temp.Board.1", "Temp.Board.2", "Temp.LED", "Pressure.mbar", "Gravity.X.mg", "Gravity.Y.mg", "Gravity.Z.mg", "Supply.U.mV", "Supply.I.mA")
  
   Flight_AVG<-rbind(Flight_AVG,colmean) 
-  colnames(Flight_AVG)<-colnames(Flight)[2:10]
+  colnames(Flight_AVG)<-colnames(colmean)
 }
 
 
