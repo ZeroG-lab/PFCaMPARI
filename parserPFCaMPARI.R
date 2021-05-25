@@ -88,7 +88,8 @@ for (i in grep("LED ON",Flight$event)) {
  
   #collapse the split and corrected time string back into the time column
   colmean$Time <-  paste(timestring, collapse = ":")
-
+  #convert string to time
+  Flight$time <- as.POSIXct(Flight$time,format="%H:%M:%OS")
   #Add column "Unit" with 101/102/103/104  to Flight_AVG dataframe
   d1 <- read.table(text=gsub("^.*it|Flight|.csv", "", k),
                    sep = "_", col.names = c("Unit" , "Flight"))
@@ -126,6 +127,4 @@ for (i in grep("LED ON",Flight$event)) {
 PFC_Hardware <- rbind(PFC_Hardware,Flight_AVG)
 
 }
-
-
 
