@@ -118,3 +118,5 @@ for (i in grep("LED ON",Flight$event)) {
   #clean up
   rm(colmean, metastring, timestring,i)
 }
+
+Flight$time <- as.POSIXct(Flight$time,format="%H:%M:%OS")
