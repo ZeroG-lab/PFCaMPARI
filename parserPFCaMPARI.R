@@ -50,10 +50,10 @@ for (k in 1:3) {
 # added extra columns in the dataframe for 96 well plate row and column
 # to make it compatible with the Bioassays package
 
-PFCaMPARI$col <- gsub('^.', '', PFCaMPARI$Well)
-PFCaMPARI$row <- substring(PFCaMPARI$Well,1 ,1)
-col_order <- c("row","col","Well","ConversionRate","Flight","Unit", "Board", "Treatment")
-PFCaMPARI <- PFCaMPARI[, col_order]
+# PFCaMPARI$col <- gsub('^.', '', PFCaMPARI$Well)
+# PFCaMPARI$row <- substring(PFCaMPARI$Well,1 ,1)
+# col_order <- c("row","col","Well","ConversionRate","Flight","Unit", "Board", "Treatment")
+# PFCaMPARI <- PFCaMPARI[, col_order]
 
 
 
@@ -64,7 +64,7 @@ PFCaMPARI <- PFCaMPARI[, col_order]
 #prepare empty data frame for loop binding
 PFC_Hardware <-data.frame()
 
-for(k in list.files(path="./", pattern = "\\.csv", full.names = TRUE)){
+for(k in list.files(path="./", pattern = "^Unit.*\\.csv", full.names = TRUE)){
   print(paste("working on",k))
 
 Flight <- read.csv(k, sep=";", header=TRUE)
@@ -127,6 +127,10 @@ PFC_Hardware <- rbind(PFC_Hardware,Flight_AVG)
 
 }
 
+platemap <- data.frame("Well"= unique(PFCaMPARI$Well),
+                       "Parabola" = rep(c(1,2,3,4),each=24),
+                       "Construct" = rep(c("CaMPARI2","CaMPARI2-F391W"), each=6))
+
 
 #####MERGE INCUCYTE DATA WITH HARDWARE DATA#########################################################
 
@@ -134,13 +138,16 @@ PFC_Hardware <- rbind(PFC_Hardware,Flight_AVG)
 #Merge data frames and keep all entries
 PFC_Merged <- merge(PFCaMPARI, PFC_Hardware, all = TRUE)
 
+PFC_Merged <- merge(PFC_Merged, platemap, all = TRUE)
+
 #Correct Ruthenium Red treatment
 PFC_Merged$Treatment <- gsub("RuthRed|RutheniumRed", "Ruthenium Red", PFC_Merged$Treatment)
 
 #OPTIONAL: Add identifier columns for BioAssays package
 PFC_Merged$col <- gsub('^.', '', PFC_Merged$Well)
 PFC_Merged$row <- substring(PFC_Merged$Well,1 ,1)
-PFC_Merged <- PFC_Merged[, c(18,17,1:16)]
+PFC_Merged <- PFC_Merged[, c(20,19,1:4,6,17,18,5,7:16)]
 
 #Write out data
 write.csv(PFC_Merged, "./PFC_Merged.csv", quote = FALSE, row.names = FALSE)
+
