@@ -1,6 +1,8 @@
 #Load libraries
 library(readxl)
 
+#####READ INCUCYTE DATA#################################################################################
+
 #prepare empty data frame for loop binding
 PFCaMPARI <- data.frame()
 
@@ -29,7 +31,7 @@ for (k in 1:3) {
     #create metadata columns and add respective metadata entries
     Flight$Flight <- gsub("^.*t", "", metadata[1])
     Flight$Unit <- gsub("^.*t", "", metadata [2])
-    Flight$Plate <- gsub("^.*e", "", metadata [3])
+    Flight$Board <- gsub("^.*e", "", metadata [3])
     Flight$Treatment <-metadata [4]
     
     #rename first two unnamed columns
@@ -50,9 +52,14 @@ for (k in 1:3) {
 
 PFCaMPARI$col <- gsub('^.', '', PFCaMPARI$Well)
 PFCaMPARI$row <- substring(PFCaMPARI$Well,1 ,1)
-col_order <- c("row","col","Well","ConversionRate","Flight","Unit", "Plate", "Treatment")
+col_order <- c("row","col","Well","ConversionRate","Flight","Unit", "Board", "Treatment")
 PFCaMPARI <- PFCaMPARI[, col_order]
 
+
+
+
+
+#####READ IN HARDWARE DATA################################################################################
 
 #prepare empty data frame for loop binding
 PFC_Hardware <-data.frame()
@@ -78,18 +85,10 @@ for (i in grep("LED ON",Flight$event)) {
   colmean$Board <- paste(metastring[1])
   colmean$Well <- paste(metastring[2])
  
-  #prepare time string for correction by splitting it up
-  timestring <- unlist(strsplit(Flight$time[i], split = ":"))
- 
-  #if there is a single-digit minute value, add a zero. If not, ignore.
-  if(nchar(timestring[2]) == 1) {
-   timestring[2] <- paste0(0, timestring[2])
-  }else{}
- 
-  #collapse the split and corrected time string back into the time column
-  colmean$Time <-  paste(timestring, collapse = ":")
+  
   #convert string to time
-  Flight$time <- as.POSIXct(Flight$time,format="%H:%M:%OS")
+  colmean$Time <- as.POSIXct(Flight$time[i],format="%H:%M:%OS")
+  
   #Add column "Unit" with 101/102/103/104  to Flight_AVG dataframe
   d1 <- read.table(text=gsub("^.*it|Flight|.csv", "", k),
                    sep = "_", col.names = c("Unit" , "Flight"))
@@ -120,7 +119,7 @@ for (i in grep("LED ON",Flight$event)) {
   
   
   #clean up
-  rm(colmean, metastring, timestring,i)
+  rm(colmean, metastring, d1,i)
 
 }
 
@@ -128,3 +127,20 @@ PFC_Hardware <- rbind(PFC_Hardware,Flight_AVG)
 
 }
 
+
+#####MERGE INCUCYTE DATA WITH HARDWARE DATA#########################################################
+
+
+#Merge data frames and keep all entries
+PFC_Merged <- merge(PFCaMPARI, PFC_Hardware, all = TRUE)
+
+#Correct Ruthenium Red treatment
+PFC_Merged$Treatment <- gsub("RuthRed|RutheniumRed", "Ruthenium Red", PFC_Merged$Treatment)
+
+#OPTIONAL: Add identifier columns for BioAssays package
+PFC_Merged$col <- gsub('^.', '', PFC_Merged$Well)
+PFC_Merged$row <- substring(PFC_Merged$Well,1 ,1)
+PFC_Merged <- PFC_Merged[, c(18,17,1:16)]
+
+#Write out data
+write.csv(PFC_Merged, "./PFC_Merged.csv", quote = FALSE, row.names = FALSE)
