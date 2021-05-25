@@ -54,17 +54,13 @@ col_order <- c("row","col","Well","ConversionRate","Flight","Unit", "Plate", "Tr
 PFCaMPARI <- PFCaMPARI[, col_order]
 
 
-# Import Hardware flight data: 50 sets per second,
-# 8 second for every event -> 400 entries per illumination
-#extract from event start LED on + 400 rows (50 Hz -> 8 sec)
+#prepare empty data frame for loop binding
+PFC_Hardware <-data.frame()
 
-###
-### TO-DO: Add superordinate for-loop for reading through all files
-###
+for(k in list.files(path="./", pattern = "\\.csv", full.names = TRUE)){
+  print(paste("working on",k))
 
-Unit101_Flight1 <- read.csv("./Unit101_Flight1.csv", sep=";", header=TRUE)
-
-Flight<-Unit101_Flight1
+Flight <- read.csv(k, sep=";", header=TRUE)
 
 #prepare empty data frame for loop binding
 Flight_AVG<-data.frame()
@@ -92,7 +88,14 @@ for (i in grep("LED ON",Flight$event)) {
  
   #collapse the split and corrected time string back into the time column
   colmean$Time <-  paste(timestring, collapse = ":")
-
+  #convert string to time
+  Flight$time <- as.POSIXct(Flight$time,format="%H:%M:%OS")
+  #Add column "Unit" with 101/102/103/104  to Flight_AVG dataframe
+  d1 <- read.table(text=gsub("^.*it|Flight|.csv", "", k),
+                   sep = "_", col.names = c("Unit" , "Flight"))
+  
+  colmean <- cbind(colmean, d1)
+  
   #add a new row of duplicated data for each board and well and paste the corresponding metadata to it
   colmean <- rbind(colmean,colmean[1,])
   colmean$Board[2] <- paste(metastring[1])
@@ -115,8 +118,13 @@ for (i in grep("LED ON",Flight$event)) {
   #correct column names if necessary
   colnames(Flight_AVG)<-colnames(colmean)
   
+  
   #clean up
   rm(colmean, metastring, timestring,i)
+
 }
 
-Flight$time <- as.POSIXct(Flight$time,format="%H:%M:%OS")
+PFC_Hardware <- rbind(PFC_Hardware,Flight_AVG)
+
+}
+
