@@ -154,10 +154,18 @@ PFC_Merged <- merge(PFC_Merged, platemap, all = TRUE)
 PFC_Merged$Inhibitor <- gsub("RuthRed|RutheniumRed", "Ruthenium Red", PFC_Merged$Inhibitor)
 PFC_Merged$Inhibitor <- gsub("GSK219", "GSK2193874", PFC_Merged$Inhibitor)
 
+#Add G-Phase to PFC_Merged
+
+PFC_Merged$Treatment[which(PFC_Merged$Gravity.Z.mg > 1500)] <- "Hyper-G"
+PFC_Merged$Treatment[which(PFC_Merged$Gravity.Z.mg < 1500 & PFC_Merged$Gravity.Z.mg > 500)] <- "Normal-G"
+PFC_Merged$Treatment[which(PFC_Merged$Gravity.Z.mg < 500)] <- "Zero-G"
+PFC_Merged$Treatment[which(is.na(PFC_Merged$Gravity.Z.mg))] <- "Histamine"
+PFC_Merged$Inhibitor <- gsub("untreated", "None" ,PFC_Merged$Inhibitor)
+
 #OPTIONAL: Add identifier columns for BioAssays package
 PFC_Merged$col <- gsub('^.', '', PFC_Merged$Well)
 PFC_Merged$row <- substring(PFC_Merged$Well,1 ,1)
-PFC_Merged <- PFC_Merged[, c(20,19,1:4,6,17,18,5,7:16)]
+PFC_Merged <- PFC_Merged[, c(22,21,1:4,6,17:20,5,7:16)]
 
 
 #Add G-Phase to PFC_Merged
