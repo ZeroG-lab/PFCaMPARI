@@ -32,7 +32,7 @@ for (k in 1:3) {
     Flight$Flight <- gsub("^.*t", "", metadata[1])
     Flight$Unit <- gsub("^.*t", "", metadata [2])
     Flight$Board <- gsub("^.*e", "", metadata [3])
-    Flight$Treatment <-metadata [4]
+    Flight$Inhibitor <-metadata [4]
     
     #rename first two unnamed columns
     colnames(Flight)[1:2] <- c("Well", "ConversionRate")
@@ -129,7 +129,15 @@ PFC_Hardware <- rbind(PFC_Hardware,Flight_AVG)
 
 platemap <- data.frame("Well"= unique(PFCaMPARI$Well),
                        "Parabola" = rep(c(1,2,3,4),each=24),
-                       "Construct" = rep(c("CaMPARI2","CaMPARI2-F391W"), each=6))
+                       "Construct" = rep(c("CaMPARI2","CaMPARI2-F391W"), each=6),
+                       "LED.trigger" = c(1,2)
+                       )
+
+
+### Exchange every A,C,E,G 2 and 8 into GFP
+
+platemap$Construct[grep("A2|A8|C2|C8|E2|E8|G2|G8", platemap$Well)] <- "GFP"
+platemap$LED.trigger[grep("[ACEG][1278]$", platemap$Well)] <- NA
 
 
 #####MERGE INCUCYTE DATA WITH HARDWARE DATA#########################################################
@@ -140,14 +148,34 @@ PFC_Merged <- merge(PFCaMPARI, PFC_Hardware, all = TRUE)
 
 PFC_Merged <- merge(PFC_Merged, platemap, all = TRUE)
 
-#Correct Ruthenium Red treatment
-PFC_Merged$Treatment <- gsub("RuthRed|RutheniumRed", "Ruthenium Red", PFC_Merged$Treatment)
-PFC_Merged$Treatment <- gsub("GSK219", "GSK2193874", PFC_Merged$Treatment)
+#Correct Ruthenium Red/ GSK2193874 treatment
+PFC_Merged$Inhibitor <- gsub("RuthRed|RutheniumRed", "Ruthenium Red", PFC_Merged$Inhibitor)
+PFC_Merged$Inhibitor <- gsub("GSK219", "GSK2193874", PFC_Merged$Inhibitor)
 
 #OPTIONAL: Add identifier columns for BioAssays package
 PFC_Merged$col <- gsub('^.', '', PFC_Merged$Well)
 PFC_Merged$row <- substring(PFC_Merged$Well,1 ,1)
 PFC_Merged <- PFC_Merged[, c(20,19,1:4,6,17,18,5,7:16)]
+
+
+#Add G-Phase to PFC_Merged
+
+PFC_Merged$Treatment[which(PFC_Merged$Gravity.Z.mg > 1500)] <- "Hyper-G"
+PFC_Merged$Treatment[which(PFC_Merged$Gravity.Z.mg < 1500 & PFC_Merged$Gravity.Z.mg > 500)] <- "Normal-G"
+PFC_Merged$Treatment[which(PFC_Merged$Gravity.Z.mg < 500)] <- "Zero-G"
+PFC_Merged$Treatment[which(is.na(PFC_Merged$Gravity.Z.mg))] <- "Histamine"
+PFC_Merged$Inhibitor <- gsub("untreated", "None" ,PFC_Merged$Inhibitor)
+
+#PFC_Merged$G-Phase <- Normal-G
+#PFC_Merged$G-Phase <- Zero-G
+#Add first and second illuminated well per Phase
+
+
+
+
+#Treatment-column rename to inhibitor
+
+#G-phase und Histamine wird neues Treatment
 
 #Write out data
 write.csv(PFC_Merged, "./PFC_Merged.csv", quote = FALSE, row.names = FALSE)
