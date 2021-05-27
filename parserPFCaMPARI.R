@@ -142,6 +142,7 @@ PFC_Merged <- merge(PFC_Merged, platemap, all = TRUE)
 
 #Correct Ruthenium Red treatment
 PFC_Merged$Treatment <- gsub("RuthRed|RutheniumRed", "Ruthenium Red", PFC_Merged$Treatment)
+PFC_Merged$Treatment <- gsub("GSK219", "GSK2193874", PFC_Merged$Treatment)
 
 #OPTIONAL: Add identifier columns for BioAssays package
 PFC_Merged$col <- gsub('^.', '', PFC_Merged$Well)
