@@ -122,11 +122,12 @@ for (i in grep("LED ON",Flight$event)) {
   rm(colmean, metastring, d1,i)
 
 }
-
+#bind all data from each hardware unit and flight
 PFC_Hardware <- rbind(PFC_Hardware,Flight_AVG)
 
 }
 
+#Produce metadata table for assigning parabola, construct, and led trigger number to main data
 platemap <- data.frame("Well"= unique(PFCaMPARI$Well),
                        "Parabola" = rep(c(1,2,3,4),each=24),
                        "Construct" = rep(c("CaMPARI2","CaMPARI2-F391W"), each=6),
@@ -135,6 +136,7 @@ platemap <- data.frame("Well"= unique(PFCaMPARI$Well),
 
 
 ### Exchange every A,C,E,G 2 and 8 into GFP
+#Label control wells with NA
 
 platemap$Construct[grep("A2|A8|C2|C8|E2|E8|G2|G8", platemap$Well)] <- "GFP"
 platemap$LED.trigger[grep("[ACEG][1278]$", platemap$Well)] <- NA
@@ -166,16 +168,6 @@ PFC_Merged$Treatment[which(PFC_Merged$Gravity.Z.mg < 500)] <- "Zero-G"
 PFC_Merged$Treatment[which(is.na(PFC_Merged$Gravity.Z.mg))] <- "Histamine"
 PFC_Merged$Inhibitor <- gsub("untreated", "None" ,PFC_Merged$Inhibitor)
 
-#PFC_Merged$G-Phase <- Normal-G
-#PFC_Merged$G-Phase <- Zero-G
-#Add first and second illuminated well per Phase
-
-
-
-
-#Treatment-column rename to inhibitor
-
-#G-phase und Histamine wird neues Treatment
 
 #Write out data
 write.csv(PFC_Merged, "./PFC_Merged.csv", quote = FALSE, row.names = FALSE)
