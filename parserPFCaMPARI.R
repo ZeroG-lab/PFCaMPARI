@@ -56,9 +56,6 @@ for (k in 1:3) {
 # PFCaMPARI <- PFCaMPARI[, col_order]
 
 
-
-
-
 #####READ IN HARDWARE DATA################################################################################
 
 #prepare empty data frame for loop binding
@@ -66,7 +63,7 @@ PFC_Hardware <-data.frame()
 
 for(k in list.files(path="./", pattern = "^Unit.*\\.csv", full.names = TRUE)){
   print(paste("working on",k))
-  
+
   Flight <- read.csv(k, sep=";", header=TRUE)
   
   #prepare empty data frame for loop binding
@@ -175,7 +172,6 @@ PFC_Merged$col <- as.numeric(PFC_Merged$col)
 PFC_Merged$Well <- factor(PFC_Merged$Well, levels=platemap$Well, ordered=TRUE)
 PFC_Merged$Parabola <- as.character(PFC_Merged$Parabola)
 PFC_Merged$LED.trigger <- as.character(PFC_Merged$LED.trigger)
-
 
 #Write out data
 write.csv(PFC_Merged, "./PFC_Merged.csv", quote = FALSE, row.names = FALSE)
