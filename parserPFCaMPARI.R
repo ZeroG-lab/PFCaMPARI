@@ -12,8 +12,13 @@ for (k in 1:3) {
   for (i in 1:8) {
     #read data
     df_Flight <- read_xlsx(paste0("./Flight_", k, ".xlsx"), sheet = i)
+    df_Flight_int_int <- read_xlsx(paste0("./integrated_intensity_Flight_", k, ".xlsx"), sheet = i)
+    df_Flight_red_mean_int <- read_xlsx(paste0("./Red_Mean_Intensity_Object_Average_Flight_", k, ".xlsx"), sheet = i)
+    
     #cut first 6 rows 
     df_Flight <- df_Flight[-c(1:6),]
+    df_Flight_int_int <- df_Flight_int_int[-c(1:6),]
+    df_Flight_red_mean_int <- df_Flight_red_mean_int[-c(1:6),]
     
     #construct metadata string from information in first cell
     metadata <- colnames(df_Flight[ ,1])
@@ -24,9 +29,24 @@ for (k in 1:3) {
     Flight <- data.frame(t(Flight))
     Flight$X2 <- as.numeric(Flight$X2)
     
+    Flight_int_int <- df_Flight_int_int[ , -c(1,2)]
+    Flight_int_int <- data.frame(t(Flight_int_int))
+    Flight_int_int$X2 <- as.numeric(Flight_int_int$X2)
+    
+    Flight_red_mean_int <- df_Flight_red_mean_int[ , -c(1,2)]
+    Flight_red_mean_int <- data.frame(t(Flight_red_mean_int))
+    Flight_red_mean_int$X2 <- as.numeric(Flight_red_mean_int$X2)
+    
+    
     #delete row- and colnames
     colnames(Flight) <- NULL
     rownames(Flight) <- NULL
+    
+    colnames(Flight_int_int) <- NULL
+    rownames(Flight_int_int) <- NULL
+    
+    colnames(Flight_red_mean_int) <- NULL
+    rownames(Flight_red_mean_int) <- NULL
     
     #create metadata columns and add respective metadata entries
     Flight$Flight <- gsub("^.*t", "", metadata[1])
@@ -36,16 +56,25 @@ for (k in 1:3) {
     
     #rename first two unnamed columns
     colnames(Flight)[1:2] <- c("Well", "ConversionRate")
+    colnames(Flight_int_int)[1:2] <- c("Well", "IntegratedIntensity")
+    colnames(Flight_red_mean_int)[1:2] <- c("Well", "RedMeanIntensity")
     
+    #add Integrated intensity and red mean intensity to Flight dataframe, rename colnames
+    Flight <- cbind(Flight,Flight_int_int$IntegratedIntensity,Flight_red_mean_int$RedMeanIntensity)
+    colnames(Flight)[7:8]<- c("IntegratedIntensity", "RedMeanIntensity")
+   
     #bind data from previous loop to current data
     PFCaMPARI <- rbind(PFCaMPARI,Flight)
-    
+
     #clean up
     rm(df_Flight, Flight, metadata)
   }
   #clean up
   rm(i,k)
 }
+
+PFCaMPARI <- PFCaMPARI[,c(1,2,7,8,3,4,5,6)]
+
 
 # added extra columns in the dataframe for 96 well plate row and column
 # to make it compatible with the Bioassays package
@@ -165,7 +194,7 @@ PFC_Merged$Inhibitor <- gsub("untreated", "None" ,PFC_Merged$Inhibitor)
 #OPTIONAL: Add identifier columns for BioAssays package
 PFC_Merged$col <- gsub('^.', '', PFC_Merged$Well)
 PFC_Merged$row <- substring(PFC_Merged$Well,1 ,1)
-PFC_Merged <- PFC_Merged[, c(22,21,1:4,6,17:20,5,7:16)]
+PFC_Merged <- PFC_Merged[, c(24,23,1:4,8,17:22,5:7,9:16)]
 
 #Order wells, change data-types
 PFC_Merged$col <- as.numeric(PFC_Merged$col)
