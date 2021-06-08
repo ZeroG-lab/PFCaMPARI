@@ -17,21 +17,24 @@ PFC_Merged$phase <- paste(PFC_Merged$Condition, PFC_Merged$LED.trigger)
 p <- c(1,2,3,4)
 
 for (i in p) {
-  subset <- subset(PFC_Merged, Parabola == p[i] & Construct == "CaMPARI2-F391W" & Condition != "Histamine") 
+  subset <- subset(PFC_Merged, Construct == "CaMPARI2-F391W") 
   
   #ordering of phases in their reight timely manner
   subset$phase <- factor(subset$phase, 
-                             levels = c( "Pre-Parabola 1","Pre-Parabola 2","Pull-up 1","Pull-up 2",
-                                         "Zero-G 1","Zero-G 2","Pull-out 1","Pull-out 2","Post-Parabola 1","Post-Parabola 2"),
+                             levels = c( "Pre-Parabola 1","Pre-Parabola 2",
+                                         "Pull-up 1","Pull-up 2", "Zero-G 1",
+                                         "Zero-G 2","Pull-out 1","Pull-out 2",
+                                         "Post-Parabola 1","Post-Parabola 2"),
                              ordered = TRUE)
   
   subset$Condition <- factor(subset$Condition, 
-                             levels = c( "Pre-Parabola","Pull-up","Zero-G","Pull-out","Post-Parabola"),
+                             levels = c( "Pre-Parabola","Pull-up","Zero-G",
+                                         "Pull-out","Post-Parabola"),
                              ordered = TRUE)
   
   #plot panels with boxplots
-  boxplot <- ggplot(subset, aes(x=phase, y=ConversionRate, fill=Condition)) + 
-    geom_boxplot() +
+  boxplot <- ggplot(subset, aes(x=phase, y=IntegratedIntensity, fill=Condition)) + 
+    geom_boxplot(outlier.size = 0.5,) +
     facet_wrap(~Inhibitor)+
     theme_light()+
     theme(
@@ -53,7 +56,7 @@ for (i in p) {
                                label.y = 0.35, hide.ns = TRUE)
   
   #save as vector graphic in .eps format
-  ggsave(filename = paste0("ConversionRates_parabola",p[i],".eps"),
+  ggsave(filename = paste0("ConversionRates_parabola",p[i],".png"),
          plot = print(figure),
-         device = cairo_ps)
+         device = png())
 }
