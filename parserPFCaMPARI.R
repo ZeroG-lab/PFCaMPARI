@@ -11,7 +11,7 @@ for (k in 1:3) {
   #loop through all sheets in each flight data set
   for (i in 1:8) {
     #read data
-    df_Flight <- read_xlsx(paste0("./Flight_", k, ".xlsx"), sheet = i)
+    df_Flight <- read_xlsx(paste0("./Conversion_Rate_Flight_", k, ".xlsx"), sheet = i)
     df_Flight_int_int <- read_xlsx(paste0("./integrated_intensity_Flight_", k, ".xlsx"), sheet = i)
     df_Flight_red_mean_int <- read_xlsx(paste0("./Red_Mean_Intensity_Object_Average_Flight_", k, ".xlsx"), sheet = i)
     df_Flight_Green_Red_Mean_Int <- read_xlsx(paste0("./Green+Red_Mean_Intensity_Object_Average_Flight_", k, ".xlsx"), sheet = i)
