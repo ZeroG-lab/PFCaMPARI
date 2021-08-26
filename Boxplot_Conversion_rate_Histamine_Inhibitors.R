@@ -36,7 +36,9 @@ PFC_Merged$phase <- paste(PFC_Merged$Condition, PFC_Merged$LED.trigger)
                              levels = c("None", "DMSO", "Gd3+", "Ruthenium Red", "GSK2193874", "Thapsigargin", "Flunarizine", "BAPTA"))
   
   HistamineSubset<- subset(subset,Condition=="Histamine")
-  HistamineSubset<- rbind(HistamineSubset,subset(subset, phase=="Pre-Parabola 1" & Inhibitor == "Thapsigargin"))
+  HistamineSubset$normalized <- HistamineSubset$ConversionRate - subset$ConversionRate[which(subset$phase== "Pre-Parabola 1")]
+  
+  
   HistamineSubset$Inhibitor<- as.character(HistamineSubset$Inhibitor)
   HistamineSubset$Inhibitor[which(HistamineSubset$phase== "Pre-Parabola 1")] <- "Thapsigargin*"
   HistamineSubset$Inhibitor<- factor(HistamineSubset$Inhibitor,
@@ -44,7 +46,7 @@ PFC_Merged$phase <- paste(PFC_Merged$Condition, PFC_Merged$LED.trigger)
   
   
   #plot panels with boxplots
-  boxplot <- ggplot(HistamineSubset, aes(x=Construct, y=ConversionRate, fill=Inhibitor)) + 
+  boxplot <- ggplot(HistamineSubset, aes(x=Construct, y=normalized, fill=Inhibitor)) + 
     geom_boxplot(outlier.size = 0.5, width = 0.55, position = position_dodge(width = 0.7)) +
     scale_x_discrete(expand = c(0,0.37)) +
     scale_fill_brewer(palette = "YlGnBu", direction = -1) +
