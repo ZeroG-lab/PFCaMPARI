@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: If you use this software, please cite it using these metadata.
+title: PFCaMPARI
+abstract: Calcium (Ca2+) signaling is an essential secondary messenger in various cellular processes, in-cluding disease progression and adaptation to external stimuli, e.g., microgravity. Therefore, mapping and quantifying calcium signaling with a high spatiotemporal resolution is a key challenge. However, particularly in microgravity settings, experiment time is limited, allowing only a small number of replicates. Furthermore, experiment hardware is exposed to changes in gravity levels, leading to experimental artifacts if not appropriately controlled. We introduce a new experimental setup based on the fluorescent calcium reporter CaMPARI2 combined with LED arrays. This setup allows for higher throughput and accuracy due to its retrograde nature. The excellent performance of CaMPARI2 was demonstrated with human chondrocytes during the 75th ESA parabolic flight campaign. CaMPARI2 revealed a strong calcium response triggered by his-tamine but showed no difference to the alternating gravitational load of a parabolic flight.
+authors:
+  - family-names: Hammer
+    given-names: Andreas
+  - family-names: Ricciardi
+    given-names: Dario Angelo
+  - family-names: Böhmer
+    given-names: Maik
+    orcid: "https://orcid.org/0000-0001-6675-273X"
+version: 0.11.2
+date-released: "2021-12-31"
+identifiers:
+  - description: This is the collection of R scripts to analyze CaMAPRI data imaged on a Sartorius Incucyte during Parabolic flight campaigns
+    type: doi
+    value: ""
+  - description: This is the archived snapshot of version 0.11.2 of the PFCaMPARI Software
+    type: doi
+    value: ""
+license: Apache-2.0
+repository-code: "https://github.com/ZeroG-lab/PFCaMPARI"
