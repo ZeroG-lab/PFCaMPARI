@@ -3,6 +3,7 @@ library(ggplot2)
 library(ggpubr)
 library(hrbrthemes)
 library(Cairo)
+library(RColorBrewer)
 
 #read csv file
 PFC_Merged <- read.csv("PFC_Merged.csv")
@@ -28,14 +29,31 @@ PFC_Merged$phase <- paste(PFC_Merged$Condition, PFC_Merged$LED.trigger)
                              ordered = TRUE)
   
   subset$Condition <- factor(subset$Condition, 
-                             levels = c( "Pre-Parabola","Pull-up","Zero-G",
-                                         "Pull-out","Post-Parabola", "Histamine"),
+                             levels = c( "Histamine"),
                              ordered = TRUE)
   
-  #plot panels with boxplots/ Change Y and Title  to ConversionRate, IntegratedIntensity, RedMeanIntensity, Green_Red_Mean_Intensity
-  boxplot <- ggplot(subset, aes(x=phase, y=ConversionRate, fill=Condition)) + 
-    geom_boxplot(outlier.size = 0.5,) +
-    facet_wrap(~Inhibitor)+
+  subset$Inhibitor <- factor(subset$Inhibitor,
+                             levels = c("None", "DMSO", "Gd3+", "Ruthenium Red", "GSK2193874", "Thapsigargin", "Flunarizine", "BAPTA"))
+  
+  HistamineSubset<- subset(subset,Condition=="Histamine")
+  
+  #Change target subset for ConversionRate, IntegratedIntensity, RedMeanIntensity, Green_Red_Mean_Intensity
+  HistamineSubset$normalized <- HistamineSubset$ConversionRate - subset$ConversionRate[which(subset$phase== "Pre-Parabola 1")]
+  
+  
+  HistamineSubset$Inhibitor<- as.character(HistamineSubset$Inhibitor)
+  HistamineSubset$Inhibitor[which(HistamineSubset$phase== "Pre-Parabola 1")] <- "Thapsigargin*"
+  HistamineSubset$Inhibitor<- factor(HistamineSubset$Inhibitor,
+                                     levels = c("None", "DMSO", "Gd3+", "Ruthenium Red", "GSK2193874", "Thapsigargin","Thapsigargin*", "Flunarizine", "BAPTA"))
+  
+  
+  #plot panels with boxplots, change y= to normalized/ConversionRate
+  
+  boxplot <- ggplot(HistamineSubset, aes(x=Inhibitor, y=ConversionRate, fill=Inhibitor)) + 
+    geom_boxplot(outlier.size = 0.5, width = 0.55, position = position_dodge(width = 0.7)) +
+    scale_x_discrete(expand = c(0,0.37)) +
+    scale_fill_brewer(palette = "YlGnBu", direction = -1) +
+    #facet_wrap(~Inhibitor)+
     theme_light()+
     theme(
       text = element_text(size=13, family= "TT Arial" ),
@@ -52,13 +70,17 @@ PFC_Merged$phase <- paste(PFC_Merged$Condition, PFC_Merged$LED.trigger)
     
     ggtitle(paste0("ConversionRate"))
   
+  #HistamineSubset$Inhibitor<- as.character(HistamineSubset$Inhibitor)
+  
+  symnum.args <- list(cutpoints = c(0, 0.001, 0.01, 0.05, 1), symbols = c("***", "**", "*", "ns")) 
+  
   figure <- boxplot + stat_compare_means(label = "p.signif", method = "t.test",
-                               ref.group = "Pre-Parabola 1",
+                               ref.group = "None",
+                               symnum.args = symnum.args,
                                label.y = 0.3, hide.ns = TRUE)
-  print(figure)
   
   #save as vector graphic in .eps format
-  ggsave(filename = paste0("All_Inhibitors_All_parabolas_RedMeanIntensity",".eps"),
+  ggsave(filename = paste0("Green_Red_Mean_Intensity_Histamine_Inhibitors",".eps"), width = 12, height = 9, units = "cm", 
          plot = print(figure),
          device = cairo_ps)
   
