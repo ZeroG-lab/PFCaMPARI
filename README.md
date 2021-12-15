@@ -10,3 +10,5 @@ Therefore, a new hardware was designed to carry 96 well plates containing the tr
 # Contents
 
 This repository contains the data and scripts that were used to analyse microscopic data gathered from imaging the C28/I2 human chondrocytes after the parabolic flights with an Sartorius IncuCyte high througput microscope.
+
+## Extracted data
