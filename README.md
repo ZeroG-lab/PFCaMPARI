@@ -12,3 +12,7 @@ Therefore, a new hardware was designed to carry 96 well plates containing the tr
 This repository contains the data and scripts that were used to analyse microscopic data gathered from imaging the C28/I2 human chondrocytes after the parabolic flights with an Sartorius IncuCyte high througput microscope.
 
 ## Extracted data
+
+Hardware data: Each hardware unit contained 2 96-well plates, 4 units were used in total. Each unit measured time, voltage, current, temperature, pressure, acceleration and illumination events.  These parameters were exported into excel files, which then were parsed into a data frame using R-Studio.
+
+Exported IncuCyte image fluorescent data:
