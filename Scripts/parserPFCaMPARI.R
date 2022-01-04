@@ -1,3 +1,6 @@
+#This script reads raw data from the incucyte microscope and the hardware sensors
+#and combines into one unified data frame for use in subsequent analyses.
+
 #Load libraries
 library(readxl)
 
@@ -11,11 +14,11 @@ for (k in 1:3) {
   #loop through all sheets in each flight data set
   for (i in 1:8) {
     #read data
-    df_Flight <- read_xlsx(paste0("./Conversion_Rate_Flight_", k, ".xlsx"), sheet = i)
-    df_Flight_int_int <- read_xlsx(paste0("./integrated_intensity_Flight_", k, ".xlsx"), sheet = i)
-    df_Flight_red_mean_int <- read_xlsx(paste0("./Red_Mean_Intensity_Object_Average_Flight_", k, ".xlsx"), sheet = i)
-    df_Flight_Green_Red_Mean_Int <- read_xlsx(paste0("./Green+Red_Mean_Intensity_Object_Average_Flight_", k, ".xlsx"), sheet = i)
-    df_Flight_Green_Red_Mean_Int_norm_Green_Mean_Int <- read_xlsx(paste0("./Green+Red_Mean_Intensity_normalized_to_Green_Flight_", k, ".xlsx"), sheet = i)
+    df_Flight <- read_xlsx(paste0("IncuCyte_Flight_data/Conversion_Rate_Flight_", k, ".xlsx"), sheet = i)
+    df_Flight_int_int <- read_xlsx(paste0("IncuCyte_Flight_data//integrated_intensity_Flight_", k, ".xlsx"), sheet = i)
+    df_Flight_red_mean_int <- read_xlsx(paste0("IncuCyte_Flight_data//Red_Mean_Intensity_Object_Average_Flight_", k, ".xlsx"), sheet = i)
+    df_Flight_Green_Red_Mean_Int <- read_xlsx(paste0("IncuCyte_Flight_data//Green+Red_Mean_Intensity_Object_Average_Flight_", k, ".xlsx"), sheet = i)
+    df_Flight_Green_Red_Mean_Int_norm_Green_Mean_Int <- read_xlsx(paste0("IncuCyte_Flight_data//Green+Red_Mean_Intensity_normalized_to_Green_Flight_", k, ".xlsx"), sheet = i)
     
     
     #cut first 6 rows 
@@ -98,21 +101,12 @@ for (k in 1:3) {
 PFCaMPARI <- PFCaMPARI[,c(1,2,7,8,9,10,3,4,5,6)]
 
 
-# added extra columns in the dataframe for 96 well plate row and column
-# to make it compatible with the Bioassays package
-
-# PFCaMPARI$col <- gsub('^.', '', PFCaMPARI$Well)
-# PFCaMPARI$row <- substring(PFCaMPARI$Well,1 ,1)
-# col_order <- c("row","col","Well","ConversionRate","Flight","Unit", "Board", "Treatment")
-# PFCaMPARI <- PFCaMPARI[, col_order]
-
-
 #####READ IN HARDWARE DATA################################################################################
 
 #prepare empty data frame for loop binding
 PFC_Hardware <-data.frame()
 
-for(k in list.files(path="./", pattern = "^Unit.*\\.csv", full.names = TRUE)){
+for(k in list.files(path="Unit_data/", pattern = "^Unit.*\\.csv", full.names = TRUE)){
   print(paste("working on",k))
 
   Flight <- read.csv(k, sep=";", header=TRUE)
@@ -225,4 +219,4 @@ PFC_Merged$Parabola <- as.character(PFC_Merged$Parabola)
 PFC_Merged$LED.trigger <- as.character(PFC_Merged$LED.trigger)
 
 #Write out data
-write.csv(PFC_Merged, "./PFC_Merged.csv", quote = FALSE, row.names = FALSE)
+write.csv(PFC_Merged, "Data_frames//PFC_Merged.csv", quote = FALSE, row.names = FALSE)
