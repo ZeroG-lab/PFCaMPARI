@@ -1,7 +1,7 @@
 #This script reads raw data from the incucyte microscope and the hardware sensors
-#and combines into one unified data frame for use in subsequent analyses.
+#and combines it into one unified data frame for use in subsequent analyses.
 
-#Load libraries
+#load libraries
 library(readxl)
 
 #####READ INCUCYTE DATA#################################################################################
