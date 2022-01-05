@@ -22,3 +22,13 @@ The 96-well plates used during the parabolic flight were imaged using an IncuCyt
 ## Scripts
 
 ### parserPFCaMPARI.R
+
+### KD-dependent_ConversionRate_parser.R
+
+### Boxplot_all_Constructs.R
+
+### Boxplot_All_Metrics_all_parabolas.R
+
+### Boxplot_Inhibitors_Conversion_rate_normalized_to_Pre-Parabola.R
+
+### z-factor_Flight_specific.R
