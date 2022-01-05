@@ -13,6 +13,22 @@ This repository contains the data and scripts that were used to analyse microsco
 
 ## Extracted data
 
-Hardware data: Each hardware unit contained 2 96-well plates, 4 units were used in total. Each unit measured time, voltage, current, temperature, pressure, acceleration and illumination events.  These parameters were exported into excel files, which then were parsed into a data frame using R-Studio.
+### Hardware data
+Each hardware unit contained 2 96-well plates, 4 units were used in total. Each unit measured time, voltage, current, temperature, pressure, acceleration and illumination events.  These parameters were exported into excel files, which then were parsed into a data frame using R-Studio.
 
-Exported IncuCyte image fluorescent data:
+### IncuCyte image fluorescent data
+The 96-well plates used during the parabolic flight were imaged using an IncuCyte high-throughput microscope provided by Sartorius. In each well, a cross-pattern of 5 images was measured. These images were then analysed by the IncuCyte 2021A software. The fluorescence intensity and total number of green and red cells were analysed and exported into excell to be parsed using R scripts.
+
+## Scripts
+
+### parserPFCaMPARI.R
+
+### KD-dependent_ConversionRate_parser.R
+
+### Boxplot_all_Constructs.R
+
+### Boxplot_All_Metrics_all_parabolas.R
+
+### Boxplot_Inhibitors_Conversion_rate_normalized_to_Pre-Parabola.R
+
+### z-factor_Flight_specific.R
