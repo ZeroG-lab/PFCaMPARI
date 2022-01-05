@@ -67,8 +67,8 @@ figure <- boxplot + stat_compare_means(label = "p.signif", method = "t.test",
 #print figure
 print(figure)
   
-#save as vector graphic in .eps format
-ggsave(filename = "Figures/All_Inhibitors_All_parabolas_RedMeanIntensity.eps",
+#save as vector image in .eps format
+ggsave(filename = "Figures/All_Inhibitors_All_parabolas_ConversionRate.eps",
       plot = print(figure),
       device = cairo_ps)
   

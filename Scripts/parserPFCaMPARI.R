@@ -219,4 +219,4 @@ PFC_Merged$Parabola <- as.character(PFC_Merged$Parabola)
 PFC_Merged$LED.trigger <- as.character(PFC_Merged$LED.trigger)
 
 #Write out data
-write.csv(PFC_Merged, "Data_frames//PFC_Merged.csv", quote = FALSE, row.names = FALSE)
+write.csv(PFC_Merged, "Data_frames/PFC_Merged.csv", quote = FALSE, row.names = FALSE)

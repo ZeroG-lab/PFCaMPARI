@@ -73,8 +73,8 @@ figure <- figure + stat_compare_means(label = "p.signif", method = "t.test",
 #print figure
 print(figure)
 
-#save as vector graphic in .eps format
-ggsave(filename = paste0("ConversionRate_GFP+C2+C2FW.eps"),
+#save as vector image in .eps format
+ggsave(filename = "Figures/ConversionRate_GFP+C2+C2FW.eps",
       plot = print(figure), 
       device = cairo_ps)
 
