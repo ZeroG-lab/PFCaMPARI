@@ -14,21 +14,33 @@ This repository contains the data and scripts that were used to analyse microsco
 ## Extracted data
 
 ### Hardware data
-Each hardware unit contained 2 96-well plates, 4 units were used in total. Each unit measured time, voltage, current, temperature, pressure, acceleration and illumination events.  These parameters were exported into excel files, which then were parsed into a data frame using R-Studio.
+Each hardware unit contained 2 96-well plates, 4 units were used in total. Each unit measured time, voltage, current, temperature, pressure, acceleration and illumination events.  These parameters were exported into Excel files, which then were parsed into a data frame using R-Studio.
 
 ### IncuCyte image fluorescent data
-The 96-well plates used during the parabolic flight were imaged using an IncuCyte high-throughput microscope provided by Sartorius. In each well, a cross-pattern of 5 images was measured. These images were then analysed by the IncuCyte 2021A software. The fluorescence intensity and total number of green and red cells were analysed and exported into excell to be parsed using R scripts.
+The 96-well plates used during the parabolic flight were imaged using an IncuCyte high-throughput microscope provided by Sartorius. In each well, a cross-pattern of 5 images was measured. These images were then analysed by the IncuCyte 2021A software. The fluorescence intensity and total number of green and red cells were analysed and exported into Excel to be parsed using R scripts.
 
 ## Scripts
 
 ### parserPFCaMPARI.R
+This script reads raw data from the incucyte microscope and the hardware sensors and combines it into one unified data frame for use in subsequent analyses.
 
 ### KD-dependent_ConversionRate_parser.R
+This script shows the conversion rate of five different CaMPARI2 constructs in relation to their respective Kd values towards Ca2+.
+
+### TimeCourseConversion.R
+This script plots the time-dependent conversion of the CaMPARI2F391W-G395D construct after treatment with histamine against increasing durations of illumination with 405 nm conversion light.
 
 ### Boxplot_all_Constructs.R
+This script reads the accumulated PFC_Merged data frame and plots the conversion rate of all constructs over all flight phases during the four parabolas.
 
 ### Boxplot_All_Metrics_all_parabolas.R
+This script reads the accumulated PFC_Merged data frame and plots different analysis metrics including statistics
+
+### Boxplot_Conversion_rate_single_Parabolas.R
+This script plots the average conversion rates in all treatments and phases over all four individual parabolas.
 
 ### Boxplot_Inhibitors_Conversion_rate_normalized_to_Pre-Parabola.R
+This script plots the conversion rates of each inhibitor after post-flight histamine treatment. Conversion rates are normalized to the pre-parabola 1 flight phase.
 
 ### z-factor_Flight_specific.R
+This script calculates and plots the Z'-factor for the conversion rate of cells with a histamine-induced calcium increase after either no treatment (positive control) or BAPTA treatment (negative control).
