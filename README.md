@@ -1,6 +1,6 @@
 # PFCaMPARI
 
-Analysis of CaMPARI measurements taken during the Parabolic Flight Campaign 2021
+Analysis of CaMPARI measurements taken during the 75th ESA Parabolic Flight Campaign 2021
 
 # Overview
 
