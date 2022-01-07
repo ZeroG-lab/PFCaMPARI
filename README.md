@@ -21,6 +21,8 @@ The 96-well plates used during the parabolic flight were imaged using an IncuCyt
 
 ## Scripts
 
+The following scripts are available in this reposit.
+
 ### parserPFCaMPARI.R
 This script reads raw data from the incucyte microscope and the hardware sensors and combines it into one unified data frame for use in subsequent analyses.
 
